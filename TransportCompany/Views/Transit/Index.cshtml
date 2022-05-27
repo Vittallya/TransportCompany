@@ -1,0 +1,120 @@
+﻿@model IEnumerable<Models.Transit>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Создать заявку</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Номер договора")
+            </th>
+            <th>
+                @Html.DisplayName("Комментарий")
+            </th>
+            <th>
+                @Html.DisplayName("Дата создания")
+            </th>
+            <th>
+                @Html.DisplayName("Дата отправки")
+            </th>
+            <th>
+                @Html.DisplayName("Адрес отправителя")
+            </th>
+            <th>
+                @Html.DisplayName("Адрес получателя")
+            </th>
+            <th>
+                @Html.DisplayName("ФИО получателя")
+            </th>
+            <th>
+                @Html.DisplayName("Номер телефона получателя")
+            </th>
+            <th>
+                @Html.DisplayName("Дата получения груза")
+            </th>
+            <th>
+                @Html.DisplayName("Статус заявки")
+            </th>
+            <th>
+                @Html.DisplayName("Контрагент")
+            </th>
+            <th>
+                @Html.DisplayName("Техника")
+            </th>
+            <th>
+                @Html.DisplayName("Водитель")
+            </th>
+            <th>
+                @Html.DisplayName("Маршрут")
+            </th>
+            <th>
+                @Html.DisplayName("Груз")
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DogorNum)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Comment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCreat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateSend)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SenderAdress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReciverAdress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReciverFio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReciverPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateGetGruz)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Contragent.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transp.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Driver.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Route.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gruz.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

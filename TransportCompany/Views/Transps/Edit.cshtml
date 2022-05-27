@@ -1,0 +1,96 @@
+﻿@model Models.Transp
+
+
+@{
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Редактирование</title>
+</head>
+<body>
+
+    <h4>Транспорт</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="Mark" class="control-label">Марка</label>
+                    <input asp-for="Mark" class="form-control" />
+                    <span asp-validation-for="Mark" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Number" class="control-label">Номер</label>
+                    <input asp-for="Number" class="form-control" />
+                    <span asp-validation-for="Number" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LoadCapasity" class="control-label">Грузподъемность (т)</label>
+                    <input asp-for="LoadCapasity" class="form-control" />
+                    <span asp-validation-for="LoadCapasity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Characteristics" class="control-label">Характеристика</label>
+                    <input asp-for="Characteristics" class="form-control" />
+                    <span asp-validation-for="Characteristics" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsSpecial" /> @Html.DisplayName("Специальная техника")
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TransportPurpose" class="control-label">Назначение</label>
+                    @Html.DropDownListFor(x => x.TransportPurpose,
+                    PurposeNames.Purposes.Select(y =>
+                    {
+                        return new SelectListItem(y.Value, y.Key.ToString());
+                    }))
+                    <span asp-validation-for="TransportPurpose" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TransportSpecialPurpose" class="control-label">Назначение спец. техники</label>
+                    @Html.DropDownListFor(x => x.TransportSpecialPurpose, PurposeNames.PurposesSpec.Select(y =>
+                    {
+                        return new SelectListItem(y.Value, y.Key.ToString());
+                    }))
+                    <span asp-validation-for="TransportSpecialPurpose" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Cost" class="control-label">Стоимость (руб/ч)</label>
+                    <input asp-for="Cost" class="form-control" />
+                    <span asp-validation-for="Cost" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PayToDriver" class="control-label">Оплата водителю (руб/ч)</label>
+                    <input asp-for="PayToDriver" class="form-control" />
+                    <span asp-validation-for="PayToDriver" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsFree" /> @Html.DisplayName("Свободен")
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+</body>
+</html>

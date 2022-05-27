@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Models.Transp>
+
+@{
+    Layout = "MainLayout";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<p>
+    <a asp-action="Create">Добавить</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Марка")
+            </th>
+            <th>
+                @Html.DisplayName("Номер")
+            </th>
+            <th>
+                @Html.DisplayName("Грузоподъемность")
+            </th>
+            <th>
+                @Html.DisplayName("Характеристика")
+            </th>
+            <th>
+                @Html.DisplayName("Спецтехника")
+            </th>
+            <th>
+                @Html.DisplayName("Назначение")
+            </th>
+            <th>
+                @Html.DisplayName("Стоимость (руб/ч)")
+            </th>
+            <th>
+                @Html.DisplayName("Оплата водителю (руб/ч)")
+            </th>
+            <th>
+                @Html.DisplayName("Свободна")
+            </th>
+            <th width="80"></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Mark)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LoadCapasity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Characteristics)
+            </td>
+            <td>
+                <span>@(item.IsSpecial ? "Да":"Нет")</span>
+            </td>
+            <td>
+                @if (!item.IsSpecial)
+                {
+                    @Html.DisplayFor(modelItem => PurposeNames.Purposes[item.TransportPurpose])
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => PurposeNames.PurposesSpec[item.TransportSpecialPurpose])
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PayToDriver)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsFree)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Редакт.</a>
+                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>

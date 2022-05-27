@@ -1,0 +1,153 @@
+﻿@model TransitViewModel
+
+@{ 
+    Layout = "_Layout";
+}
+
+<body>
+
+    <h4>Машина найдена. Выберите маршрут, водителя, контрагента</h4>
+    <hr />
+
+
+    <div>
+        <div>
+
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Техника</td>
+                        <td>@Model.Transp.Mark</td>
+                    </tr>
+                        @if (Model.Transp.LoadCapasity.HasValue && Model.Transp.LoadCapasity.Value > 0)
+                        {
+                            <tr>
+                                <td width="320">Максимальная грузоподъемность (т.)</td>
+                                <td>@Model.Transp.LoadCapasity?.ToString()</td>
+                            </tr>
+                        }
+
+                        @if (Model.Transp.Characteristics != null)
+                        {
+                            <tr>
+                                <td>Характеристики:</td>
+                                <td>@Model.Transp.Characteristics</td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <td>Стоимость (руб/ч)</td>
+                            <td>@Model.Transp.Cost.ToString()</td>
+                        </tr>
+                        <tr>
+                            <td>Оплата водителю (руб/ч)</td>
+                            <td>@Model.Transp.PayToDriver.ToString()</td>
+                        </tr>
+                    </tbody>
+                </table>
+        </div>
+    </div>
+
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+
+            <form method="post" asp-action="ChooseRoute">
+                @Html.HiddenFor(y => y.Transit.GruzId)
+                @Html.HiddenFor(y => y.Transit.TranspId)
+
+                <div class="form-group">
+                    <label class="control-label">Маршрут</label>
+                    @Html.DropDownListFor(y => y.Transit.RouteId, Model.Routes.Select(x => new SelectListItem(x.Name, x.Id.ToString())),
+                    new { @class = "form-control" })
+                    <span asp-validation-for="RouteId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Водитель</label>
+                    @Html.DropDownListFor(y => y.Transit.DriverId, Model.Drivers.Select(x => new SelectListItem(
+                    $"{x.Surname} {x.Name} {x.Otchestvo}", x.Id.ToString())),
+                    new { @class = "form-control" })
+
+                    <span asp-validation-for="Transit.DriverId" class="text-danger"></span>
+                </div>
+
+                    <label class="control-label">Контрагент</label>
+
+                    <div class="tabs">
+
+                        <input type="radio"
+                               name="tab-btn" id="tab-btn-1" value="" checked>
+                        <label for="tab-btn-1">Выбрать существующую запись</label>
+
+                        <input type="radio"
+                               asp-for="IsNewContragent"
+                               name="tab-btn" id="tab-btn-2" value="">
+                        <label for="tab-btn-2">Добавить новую запись</label>
+
+                        <div id="content-1">
+
+                            @Html.DropDownListFor(y => y.Transit.ContragentId,
+                            Model.Contragents.Select(x => new SelectListItem(x.Name, x.Id.ToString())),
+                            new { @class = "form-control" })
+                            <span asp-validation-for="Contragent.Id" class="text-danger"></span>
+                        </div>
+
+                        @*<div id="content-2">
+
+                            @Html.DropDownListFor(y => y.Contragent.Id,
+                            Model.Contragents.Select(x => new SelectListItem(x.Name, x.Id.ToString())),
+                            new { @class = "form-control" })
+                            <span asp-validation-for="Contragent.Id" class="text-danger"></span>
+                        </div>*@
+                    </div>
+
+
+                <div class="form-group">
+                    <label class="control-label">Номер договора</label>
+                    @Html.TextBoxFor(y => y.Transit.DogorNum, 
+                    new { @class = "form-control" })
+                    <span asp-validation-for="Transit.DogorNum" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Дата заказа</label>
+                    @Html.EditorFor(y => y.Transit.DateCreat, 
+                    new { @class = "form-control" })
+                    <span asp-validation-for="Transit.DateCreat" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">ФИО получателя</label>
+                    @Html.TextBoxFor(y => y.Transit.ReciverFio, 
+                    new { @class = "form-control" })
+                    <span asp-validation-for="Transit.ReciverFio" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Адрес получателя</label>
+                    @Html.TextBoxFor(y => y.Transit.ReciverAdress, 
+                    new { @class = "form-control" })
+                    <span asp-validation-for="Transit.ReciverAdress" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Номер телефона получателя</label>
+                    @Html.TextBoxFor(y => y.Transit.ReciverPhone, 
+                    new { @class = "form-control" })
+                    <span asp-validation-for="Transit.ReciverPhone" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Далее" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var res = @Html.Raw(Json.Serialize(Model.Transp));
+        console.log(res);
+    </script>
+</body>
+

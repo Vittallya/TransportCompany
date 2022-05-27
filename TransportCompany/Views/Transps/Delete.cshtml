@@ -1,0 +1,89 @@
+﻿@model Models.Transp
+
+
+@{
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Удаление</title>
+</head>
+<body>
+
+    <h3>Удалить запись?</h3>
+    <div>
+        <h4>Транспорт</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.Display("Марка")
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Mark)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.Display("Номер")
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Number)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.Display("Грузопъемность (т)")
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.LoadCapasity)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.Display("Характеристика")
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Characteristics)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.Display("Спецтехника")
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.IsSpecial ? "Да" : "Нет")
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.Display("Назначение")
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.IsSpecial ? PurposeNames.PurposesSpec[model.TransportSpecialPurpose] : PurposeNames.Purposes[model.TransportPurpose])
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.Display("Стоимость (руб/ч)")
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Cost)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.Display("Оплата водителю (руб/ч)")
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.PayToDriver)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.Display("Свободен")
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.IsFree)
+            </dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Удалить" class="btn btn-danger" /> |
+            <a asp-action="Index">Назад</a>
+        </form>
+    </div>
+</body>
+</html>
