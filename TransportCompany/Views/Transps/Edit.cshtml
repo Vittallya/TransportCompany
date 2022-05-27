@@ -43,26 +43,26 @@
                 </div>
                 <div class="form-group form-check">
                     <label class="form-check-label">
-                        <input class="form-check-input" asp-for="IsSpecial" /> @Html.DisplayName("Специальная техника")
+                        @Html.DisplayName("Специальная техника")
+                        @Html.CheckBoxFor(x => x.IsSpecial, new { onchange = "CbChanged(this)", id="cb" })
                     </label>
                 </div>
                 <div class="form-group">
                     <label asp-for="TransportPurpose" class="control-label">Назначение</label>
+                    @{
+                        var purposes = PurposeNames.Purposes;
+                        var purposesSpec = PurposeNames.PurposesSpec;
+                    }
+
                     @Html.DropDownListFor(x => x.TransportPurpose,
-                    PurposeNames.Purposes.Select(y =>
-                    {
-                        return new SelectListItem(y.Value, y.Key.ToString());
-                    }))
+                   purposes.Select(y => new SelectListItem(y.Value, y.Key.ToString())), null, new { @class = "form-control", id = "p" })
+
+                    @Html.DropDownListFor(x => x.TransportSpecialPurpose,
+                  purposesSpec.Select(y => new SelectListItem(y.Value, y.Key.ToString())), null, new { @class = "form-control", id = "sp" })
+
                     <span asp-validation-for="TransportPurpose" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="TransportSpecialPurpose" class="control-label">Назначение спец. техники</label>
-                    @Html.DropDownListFor(x => x.TransportSpecialPurpose, PurposeNames.PurposesSpec.Select(y =>
-                    {
-                        return new SelectListItem(y.Value, y.Key.ToString());
-                    }))
-                    <span asp-validation-for="TransportSpecialPurpose" class="text-danger"></span>
-                </div>
+
                 <div class="form-group">
                     <label asp-for="Cost" class="control-label">Стоимость (руб/ч)</label>
                     <input asp-for="Cost" class="form-control" />

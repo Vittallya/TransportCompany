@@ -50,25 +50,49 @@ namespace TransportCompany.Controllers
             {
                 db.Gruzs.Add(gruz);
                 await db.SaveChangesAsync();
-
-                return View("ChooseRoute", new TransitViewModel 
-                { 
-                    Transit = new Transit { DateCreat = DateTime.Now, GruzId = gruz.Id, TranspId = vehicle.Id},
-                    Transp = vehicle, 
-                    Routes = db.Routes.ToList(),
-                    Drivers = db.Drivers.Where(x => x.IsDriverFree).ToList(),
-                    Contragents = db.Contragents.ToList()
-                });
+                return base.View("ChooseRoute", GetViewModel(gruz.Id, vehicle));
             }
 
             ModelState.AddModelError("","Машина не найдена");
             return View();
         }
 
+        private TransitViewModel GetViewModel(int gruzId, Transp vehicle)
+        {
+            return new TransitViewModel
+            {
+                Transit = new Transit { DateCreat = DateTime.Now, GruzId = gruzId, TranspId = vehicle.Id },
+                Transp = vehicle,
+                Routes = db.Routes.ToList(),
+                Drivers = db.Drivers.Where(x => x.IsDriverFree).ToList(),
+                Contragents = db.Contragents.ToList()
+            };
+        }
+
         [HttpPost]
         public async Task <IActionResult> ChooseRoute(TransitViewModel model)
         {
-            db.Add(model.Transit);
+
+            if(model.IsNewContragent)
+            {
+                model.Transit.ContragentId = 0;
+                model.Transit.Contragent = model.Contragent;
+
+                if(string.IsNullOrEmpty(model.Contragent.User.Login) || string.IsNullOrEmpty(model.Contragent.User.Password))
+                {
+                    ModelState.AddModelError("", "Для контрагента необходимо ввести логин и пароль");
+                    return View(GetViewModel(model.Transit.GruzId, await db.FindAsync<Transp>(model.Transit.TranspId)));
+                }
+
+                else if(db.Users.Any(x => (x.Login == model.Contragent.User.Login || x.Password == model.Contragent.User.Password)))
+                {
+                    ModelState.AddModelError("", "Для контрагента такой логин и (-или) пароль уже существует");
+                    return View(GetViewModel(model.Transit.GruzId, await db.FindAsync<Transp>(model.Transit.TranspId)));
+                }
+                model.Contragent.User.UserGroup = UserGroup.Contragent;
+            }
+
+            db.Update(model.Transit);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

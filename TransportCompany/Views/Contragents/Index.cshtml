@@ -13,28 +13,25 @@
 </head>
 <body>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Добавить запись</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayName("Наименование")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Country)
+                @Html.DisplayName("Страна")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.GenDirector)
+                @Html.DisplayName("Ген. директор")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Phone)
+                @Html.DisplayName("Номер телефона")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Adres)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayName("Адрес")
             </th>
             <th></th>
         </tr>
@@ -58,12 +55,8 @@
                 @Html.DisplayFor(modelItem => item.Adres)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Редакт.</a>
+                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
             </td>
         </tr>
 }

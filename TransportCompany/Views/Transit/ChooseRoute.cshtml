@@ -56,6 +56,8 @@
                 @Html.HiddenFor(y => y.Transit.GruzId)
                 @Html.HiddenFor(y => y.Transit.TranspId)
 
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                 <div class="form-group">
                     <label class="control-label">Маршрут</label>
                     @Html.DropDownListFor(y => y.Transit.RouteId, Model.Routes.Select(x => new SelectListItem(x.Name, x.Id.ToString())),
@@ -72,68 +74,100 @@
                     <span asp-validation-for="Transit.DriverId" class="text-danger"></span>
                 </div>
 
-                    <label class="control-label">Контрагент</label>
+                <label class="control-label">Контрагент</label>
 
-                    <div class="tabs">
+                <div class="tabs">
 
-                        <input type="radio"
-                               name="tab-btn" id="tab-btn-1" value="" checked>
-                        <label for="tab-btn-1">Выбрать существующую запись</label>
+                    @Html.RadioButtonFor(y => y.IsNewContragent, false, new { id = "tab-btn-1", @checked = true })
+                    <label for="tab-btn-1">Выбрать существующую запись</label>
 
-                        <input type="radio"
-                               asp-for="IsNewContragent"
-                               name="tab-btn" id="tab-btn-2" value="">
-                        <label for="tab-btn-2">Добавить новую запись</label>
 
-                        <div id="content-1">
+                    @Html.RadioButtonFor(y => y.IsNewContragent, true, new { id = "tab-btn-2" })
 
-                            @Html.DropDownListFor(y => y.Transit.ContragentId,
-                            Model.Contragents.Select(x => new SelectListItem(x.Name, x.Id.ToString())),
-                            new { @class = "form-control" })
-                            <span asp-validation-for="Contragent.Id" class="text-danger"></span>
+                    <label for="tab-btn-2">Добавить новую запись</label>
+
+                    <div id="content-1">
+
+                        @Html.DropDownListFor(y => y.Transit.ContragentId,
+                        Model.Contragents.Select(x => new SelectListItem(x.Name, x.Id.ToString())),
+                        new { @class = "form-control" })
+                        <span asp-validation-for="Contragent.Id" class="text-danger"></span>
+                    </div>
+
+                    <div id="content-2">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label class="control-label">Наименование</label>
+                            <input asp-for="Contragent.Name" class="form-control" />
+                            <span asp-validation-for="Contragent.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Contragent.Country" class="control-label">Страна регистрации</label>
+                            <input asp-for="Contragent.Country" class="form-control" />
+                            <span asp-validation-for="Contragent.Country" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Contragent.GenDirector" class="control-label">Генеральный директор</label>
+                            <input asp-for="Contragent.GenDirector" class="form-control" />
+                            <span asp-validation-for="Contragent.GenDirector" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Contragent.Phone" class="control-label">Номер телефона</label>
+                            <input asp-for="Contragent.Phone" class="form-control" />
+                            <span asp-validation-for="Contragent.Phone" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Contragent.Adres" class="control-label">Адрес</label>
+                            <input asp-for="Contragent.Adres" class="form-control" />
+                            <span asp-validation-for="Contragent.Adres" class="text-danger"></span>
                         </div>
 
-                        @*<div id="content-2">
+                        <div class="form-group">
+                            <label class="control-label">Логин</label>
+                            @Html.TextBoxFor(d => d.Contragent.User.Login, new { @class = "form-control" })
+                            <span asp-validation-for="Contragent.User.Login" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Пароль</label>
+                            @Html.PasswordFor(d => d.Contragent.User.Password, new { @class = "form-control" })
+                            <span asp-validation-for="Contragent.User.Password" class="text-danger"></span>
+                        </div>
 
-                            @Html.DropDownListFor(y => y.Contragent.Id,
-                            Model.Contragents.Select(x => new SelectListItem(x.Name, x.Id.ToString())),
-                            new { @class = "form-control" })
-                            <span asp-validation-for="Contragent.Id" class="text-danger"></span>
-                        </div>*@
                     </div>
+                </div>
 
 
                 <div class="form-group">
                     <label class="control-label">Номер договора</label>
-                    @Html.TextBoxFor(y => y.Transit.DogorNum, 
+                    @Html.TextBoxFor(y => y.Transit.DogorNum,
                     new { @class = "form-control" })
                     <span asp-validation-for="Transit.DogorNum" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label class="control-label">Дата заказа</label>
-                    @Html.EditorFor(y => y.Transit.DateCreat, 
+                    @Html.EditorFor(y => y.Transit.DateCreat,
                     new { @class = "form-control" })
                     <span asp-validation-for="Transit.DateCreat" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label class="control-label">ФИО получателя</label>
-                    @Html.TextBoxFor(y => y.Transit.ReciverFio, 
+                    @Html.TextBoxFor(y => y.Transit.ReciverFio,
                     new { @class = "form-control" })
                     <span asp-validation-for="Transit.ReciverFio" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label class="control-label">Адрес получателя</label>
-                    @Html.TextBoxFor(y => y.Transit.ReciverAdress, 
+                    @Html.TextBoxFor(y => y.Transit.ReciverAdress,
                     new { @class = "form-control" })
                     <span asp-validation-for="Transit.ReciverAdress" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label class="control-label">Номер телефона получателя</label>
-                    @Html.TextBoxFor(y => y.Transit.ReciverPhone, 
+                    @Html.TextBoxFor(y => y.Transit.ReciverPhone,
                     new { @class = "form-control" })
                     <span asp-validation-for="Transit.ReciverPhone" class="text-danger"></span>
                 </div>
