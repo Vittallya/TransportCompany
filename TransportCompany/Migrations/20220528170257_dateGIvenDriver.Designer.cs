@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TransportCompany;
 
 namespace TransportCompany.Migrations
 {
     [DbContext(typeof(DbContextLocal))]
-    partial class DbContextLocalModelSnapshot : ModelSnapshot
+    [Migration("20220528170257_dateGIvenDriver")]
+    partial class dateGIvenDriver
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,9 +130,6 @@ namespace TransportCompany.Migrations
                     b.Property<float>("MinTemp")
                         .HasColumnType("real");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<float>("Size")
                         .HasColumnType("real");
 
@@ -230,15 +229,6 @@ namespace TransportCompany.Migrations
 
                     b.Property<int>("GruzId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("Income")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Outcome")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Profit")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ReciverAdress")
                         .HasColumnType("nvarchar(max)");

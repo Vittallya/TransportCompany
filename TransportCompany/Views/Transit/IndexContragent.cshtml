@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Transit>
+@{ 
+    Layout = "MainLayout";
+}
+
+<head>
+    <style>
+        .component{
+            padding: 15px 25px;
+            border-radius: 10px;
+            background-color:azure;
+            margin: 10px 0;
+            padding-left: 15px;
+        }
+
+        .box_a {
+            background-color: black;
+            width: 4px;
+            border-radius: 4px;
+            height: 25px;
+            margin-left: 15%;
+            margin-top: 7px;
+            margin-bottom: 7px;
+        }
+
+        span{
+            font-weight:600;
+        }
+    </style>
+</head>
+
+@foreach(var tr in Model)
+{
+<div class="component">
+
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayName("Номер договора")
+        </dt>
+        <dd class="col-sm-10">
+            <label>@tr.DogorNum</label>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Маршрут")
+        </dt>
+        <dd class="col-sm-10">
+            <label>@tr.Route.Name</label>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayName("Дата создания")
+        </dt>
+        <dd class="col-sm-10">
+            <label>@tr.DateCreat.ToString("dd.MM.yyyy")</label>
+        </dd>
+    </dl>
+
+    @if ((int)tr.Status >= 1)
+    {
+        <div id="a2_@tr.Id" class="box_a"></div>
+        <span>Передан водителю: @tr.DateDriverGiven.ToString("dd.MM.yyyy")</span>
+    }
+
+    @if ((int)tr.Status >= 2)
+    {
+        <div id="a3_@tr.Id" class="box_a"></div>
+        <span>Заказ выполняется: @tr.DateSend.ToString("dd.MM.yyyy")</span>
+    }
+
+    @if ((int)tr.Status >= 3)
+    {
+        <div id="a4_@tr.Id" class="box_a"></div>
+        <span>Заказ доставлен: @tr.DateGetGruz.ToString("dd.MM.yyyy")</span>
+    }
+</div>
+}

@@ -23,6 +23,28 @@ namespace TransportCompany.Controllers
             return View(await dbContextLocal.ToListAsync());
         }
 
+
+        // GET: Transps/Details/5
+        public async Task<IActionResult> Details(int? id, string backController = null, string backAction = null)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.BackController = backController ?? "Transps";
+            ViewBag.BackAction = backAction ?? "Index";
+
+            var transp = await _context.Contragents
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (transp == null)
+            {
+                return NotFound();
+            }
+
+            return View(transp);
+        }
+
         // GET: Contragents/Create
         public IActionResult Create()
         {

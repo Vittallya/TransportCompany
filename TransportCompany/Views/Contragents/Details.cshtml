@@ -1,0 +1,48 @@
+﻿@model Models.Contragent
+
+@{
+    ViewData["Title"] = "ContragentDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Контрагент</h1>
+
+<div>
+    <h4>Contragent</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayName("Наименование")
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayName("Страна регистрации")
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Country)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayName("Генеральный директор")
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.GenDirector)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayName("Номер телефона")
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayName("Адрес")
+        </dt>
+        <dd class = "col-sm-10">           
+            @Html.DisplayFor(model => model.Adres)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="@Html.ViewBag.Action" asp-controller="@Html.ViewBag.BackController">Назад</a>
+</div>

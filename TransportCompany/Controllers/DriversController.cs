@@ -29,6 +29,28 @@ namespace TransportCompany.Controllers
             return View(await dbContextLocal.ToListAsync());
         }
 
+
+        // GET: Transps/Details/5
+        public async Task<IActionResult> Details(int? id, string backController = null, string backAction = null)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.BackController = backController ?? "Transps";
+            ViewBag.BackAction = backAction ?? "Index";
+
+            var transp = await _context.Drivers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (transp == null)
+            {
+                return NotFound();
+            }
+
+            return View(transp);
+        }
+
         // GET: Drivers/Create
         public IActionResult Create()
         {
@@ -50,11 +72,13 @@ namespace TransportCompany.Controllers
             {
                 driver.User.UserGroup = UserGroup.Driver;
                 driver.User.Name = driver.Name;
+                driver.IsDriverFree = true;
                 _context.Add(driver);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", driver.UserId);
+            
+            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", driver.UserId);
             return View(driver);
         }
 

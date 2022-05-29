@@ -60,6 +60,8 @@ namespace TransportCompany.Controllers
         public IActionResult Login()
         {
             HttpContext.Response.Cookies.Delete("User");
+            HttpContext.Response.Cookies.Delete("UserId");
+            HttpContext.Response.Cookies.Delete("UserRole");
             return View();
         }
         [HttpPost]
@@ -91,6 +93,7 @@ namespace TransportCompany.Controllers
             };
 
             HttpContext.Response.Cookies.Append("User", user.Login);
+            HttpContext.Response.Cookies.Append("UserId", user.Id.ToString());
             HttpContext.Response.Cookies.Append("Role", user.UserGroup.ToString());
 
             // создаем объект ClaimsIdentity

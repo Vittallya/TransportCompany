@@ -4,6 +4,25 @@
     Layout = "_Layout";
 }
 
+<head>
+    <style>
+        .col-price {
+            margin-left: 55%;
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 2px dotted;
+        }
+        .col-main {
+            float:left;
+            width:45%;
+        }
+
+        .col-insideMain{
+
+        }
+
+    </style>
+</head>
 <body>
 
     <h4>Машина найдена. Выберите маршрут, водителя, контрагента</h4>
@@ -49,8 +68,8 @@
     </div>
 
     <hr />
-    <div class="row">
-        <div class="col-md-4">
+    <div class="col-main">
+        <div class="col-insideMain">
 
             <form method="post" asp-action="ChooseRoute">
                 @Html.HiddenFor(y => y.Transit.GruzId)
@@ -61,7 +80,7 @@
                 <div class="form-group">
                     <label class="control-label">Маршрут</label>
                     @Html.DropDownListFor(y => y.Transit.RouteId, Model.Routes.Select(x => new SelectListItem(x.Name, x.Id.ToString())),
-                    new { @class = "form-control" })
+                    new { @class = "form-control", id = "cbRoute", onchange = "CbRouteChanged(this)" })
                     <span asp-validation-for="RouteId" class="text-danger"></span>
                 </div>
 
@@ -179,9 +198,66 @@
         </div>
     </div>
 
+    <div class="col-price">
+        <table>
+            <tr>
+                <td>
+                    <span >Оплата водителю (р):</span>
+                </td>
+                <td>
+                    <span id="elemPayToDriver"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Стоимость поездки (р):</span>
+                </td>
+                <td>
+                    <span id="elemCost"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Общая стоимость (р):</span>
+                </td>
+                <td>
+                    <span id="elemTotalCost"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <script>
-        var res = @Html.Raw(Json.Serialize(Model.Transp));
-        console.log(res);
+        var transport = @Html.Raw(Json.Serialize(Model.Transp));
+        var routes = @Html.Raw(Json.Serialize(Model.Routes))
+        
+
+        var elem1 = document.getElementById("elemPayToDriver")
+        var elem2 = document.getElementById("elemCost")
+        var elem3 = document.getElementById("elemTotalCost")
+            
+        var select = document.getElementById("cbRoute")
+        window.onload = function () {
+            CbRouteChanged(select)
+        }
+
+        function CbRouteChanged(elem) {
+            var id = elem.value;            
+            var route = routes.find(item => item.id == id)
+
+            var payToDriverCost = route.hoursCount * transport.payToDriver;
+            var cost = route.hoursCount * transport.cost;
+
+
+            console.log(payToDriverCost)
+            console.log(cost)
+
+            elem1.innerHTML = payToDriverCost;
+            elem2.innerHTML = cost;
+            elem3.innerHTML = cost + payToDriverCost;
+        }
+
+
     </script>
 </body>
 

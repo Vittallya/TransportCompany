@@ -16,8 +16,6 @@
 }*/
 
 .tabs {
-    font-size: 0;
-    max-width: 350px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -37,7 +35,8 @@
 /* отобразить контент, связанный с вабранной радиокнопкой (input type="radio") */
 #tab-btn-1:checked ~ #content-1,
 #tab-btn-2:checked ~ #content-2,
-#tab-btn-3:checked ~ #content-3 {
+#tab-btn-3:checked ~ #content-3,
+#tab-btn-4:checked ~ #content-4 {
     display: block;
 }
 

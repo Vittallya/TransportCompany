@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/MainLayout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Заявки</h1>
 
 <p>
     <a asp-action="Create">Создать заявку</a>
@@ -95,19 +95,19 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Contragent.Id)
+                @Html.ActionLink(item.Contragent.Name, "Details", "Contragents", new { id = item.ContragentId, backController = "Transit" })
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Transp.Id)
+                @Html.ActionLink(item.Transp.Mark, "Details", "Transps", new { id = item.TranspId, backController = "Transit" })
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Driver.Id)
+                @Html.ActionLink($"{item.Driver.Surname} {item.Driver.Name} {item.Driver.Otchestvo}", "Details", "Drivers", new { id = item.DriverId, backController = "Transit" })
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Route.Id)
+                @Html.DisplayFor(modelItem => item.Route.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Gruz.Id)
+                @Html.ActionLink($"{item.Gruz.Weight} (т.)", "GruzDetails", new { id = item.GruzId })
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

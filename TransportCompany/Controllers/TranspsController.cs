@@ -26,12 +26,15 @@ namespace TransportCompany.Controllers
         }
 
         // GET: Transps/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, string backController = null, string backAction = null)
         {
             if (id == null)
             {
                 return NotFound();
             }
+
+            ViewBag.BackController = backController ?? "Transps";
+            ViewBag.BackAction = backAction ?? "Index";
 
             var transp = await _context.Transps
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -58,6 +61,7 @@ namespace TransportCompany.Controllers
         {
             if (ModelState.IsValid)
             {
+                transp.IsFree = true;
                 _context.Add(transp);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -86,7 +90,8 @@ namespace TransportCompany.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Mark,Number,LoadCapasity,Characteristics,TransportPurpose,IsSpecial,TransportSpecialPurpose,Cost,PayToDriver,IsFree")] Transp transp)
+        public async Task<IActionResult> Edit(int id, 
+            [Bind("Id,Mark,Number,LoadCapasity,Characteristics,TransportPurpose,IsSpecial,TransportSpecialPurpose,Cost,PayToDriver,IsFree")] Transp transp)
         {
             if (id != transp.Id)
             {

@@ -1,0 +1,228 @@
+﻿@model ReportSettings
+
+@{
+    Layout = "MainLayout";
+}
+
+<style>
+    input[type=submit] {
+        display: block;
+    }
+</style>
+
+<form data-ajax="true" method="post" data-ajax-success="OnDataSuccess">
+
+
+    <div class="form-group">
+        <label asp-for="Period" class="control-label">Период</label>
+
+        @Html.DropDownList("Period",
+       Enum.GetNames<ReportPeriod>().Select(x => new SelectListItem(x, x)), new { @class = "form-control", id = "selPeriod", onchange = "periodChanged(this)" })
+        <span asp-validation-for="Period" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-group" id="dates">
+
+        <div class="d-inline-block">
+            <label asp-for="StartDate" class="control-label">С:</label>
+            <input asp-for="StartDate" type="date" class="form-control input_period" />
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+
+        <div class="d-inline-block ml-2">
+            <label asp-for="EndDate" class="control-label">По:</label>
+            <input asp-for="EndDate" type="date" class="form-control input_period" />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+
+    </div>
+
+    <div class="form-group" id="weeks">
+
+        <div class="d-inline-block">
+            <label asp-for="StartWeek" class="control-label">С:</label>
+            <input asp-for="StartWeek" type="week" class="form-control input_period" />
+            <span asp-validation-for="StartWeek" class="text-danger"></span>
+        </div>
+
+        <div class="d-inline-block ml-2">
+            <label asp-for="EndWeek" class="control-label">По:</label>
+            <input asp-for="EndWeek" type="week" class="form-control input_period" />
+            <span asp-validation-for="EndWeek" class="text-danger"></span>
+        </div>
+
+    </div>
+
+    <div class="form-group" id="months">
+
+        <div class="d-inline-block">
+            <label asp-for="StartMonth" class="control-label">С:</label>
+            <input asp-for="StartMonth" type="month" class="form-control input_period" />
+            <span asp-validation-for="StartMonth" class="text-danger"></span>
+        </div>
+
+        <div class="d-inline-block ml-2">
+            <label asp-for="EndMonth" class="control-label">По:</label>
+            <input asp-for="EndMonth" type="month" class="form-control input_period" />
+            <span asp-validation-for="EndMonth" class="text-danger"></span>
+        </div>
+
+    </div>
+
+    <div class="form-group" id="quartals">
+
+        <div class="d-inline-block">
+            <label asp-for="QuartalStart" class="control-label">С:</label>
+            @Html.DropDownList("QuartalStart",
+      Enumerable.Range(1, 4).Select(x => new SelectListItem(x.ToString(), x.ToString())), 
+      new { @class = "form-control" })
+
+            <span asp-validation-for="QuartalStart" class="text-danger"></span>
+        </div>
+
+        <div class="d-inline-block ml-2">
+            <label asp-for="QuartalEnd" class="control-label">по:</label>
+            @Html.DropDownList("QuartalEnd",
+      Enumerable.Range(1, 4).Select(x => new SelectListItem(x.ToString(), x.ToString())),
+      new { @class = "form-control" })
+            <span asp-validation-for="QuartalEnd" class="text-danger"></span>
+        </div>
+
+    </div>
+
+    <div class="form-group" id="years">
+
+        <div class="d-inline-block">
+            <label asp-for="StartYear" class="control-label">С:</label>
+            @Html.DropDownList("StartYear",
+      Enumerable.Range(2015, DateTime.Now.Year - 2015 + 1).Select(x => new SelectListItem(x.ToString(), x.ToString())), 
+      new { @class = "form-control" })
+
+            <span asp-validation-for="StartYear" class="text-danger"></span>
+        </div>
+
+        <div class="d-inline-block ml-2">
+            <label asp-for="EndYear" class="control-label">по:</label>
+            @Html.DropDownList("EndYear",
+      Enumerable.Range(2015, DateTime.Now.Year - 2015 + 1).Select(x => new SelectListItem(x.ToString(), x.ToString())),
+      new { @class = "form-control" })
+            <span asp-validation-for="EndYear" class="text-danger"></span>
+        </div>
+
+    </div>
+
+
+
+    <input type="submit" value="Показать" />
+</form>
+
+<hr />
+
+<div id="place" style="height: 400px;"></div>
+
+
+
+<script>
+
+
+    settings = {
+        axisX: {
+            show: true,
+            color: "black",
+            width: 2,
+            value: "₽",
+        },
+        axisY: {
+            show: true,
+            color: "black",
+            width: 2,
+            value: "",
+            minValue: 0,
+            maxValue: 0,
+        },
+        fill: null,
+        line: {
+            width: 2,
+            style: "straight",
+            shadow: true,
+        },
+        point: {
+            show: true,
+            radius: 4,
+            strokeWidth: 3,
+            stroke: "#ffffff", // null or color by hex/rgba
+        }
+
+    };
+    let div = document.getElementById("place");
+
+    let sel = document.getElementById('selPeriod')
+
+    document.onload = setTimeout(() => periodChanged(sel), 25)
+
+    function periodChanged(elem) {
+        console.log('changed')
+        $('#dates').hide()
+        $('#weeks').hide()
+        $('#months').hide()
+        $('#quartals').hide()
+        $('#years').hide()
+
+        switch (elem.value) {
+            case 'Day': {
+                $('#dates').show()
+                break
+            }
+
+            case 'Week': {
+                $('#weeks').show()
+                break
+            }
+
+            case 'Month': {
+                $('#months').show()
+                break
+            }
+            case 'Quartal': {
+
+                $('#quartals').show()
+            }
+
+            case 'Year': {
+
+                $('#years').show()
+                break
+            }
+        }
+    }
+
+    function OnDataSuccess(data) {
+        console.log(data)
+
+
+        var removable = document.getElementById("chart")
+
+        if (removable)
+            div.removeChild(removable)
+
+        let d = new liteChart("chart", settings);
+        // Set labels
+        d.setLabels(data.labels);
+
+        // Set legends and values
+        d.addLegend({ "name": "Доходы", "stroke": "#CDDC39", "fill": "#fff", "values": data.incomes });
+        d.addLegend({ "name": "Расходы", "stroke": "#3b95f7", "fill": "#fff", "values": data.outcomes });
+        d.addLegend({ "name": "Прибыль", "stroke": "#FFC107", "fill": "#fff", "values": data.profits });
+
+        // Inject chart into DOM object
+        d.inject(div);
+
+
+        // Draw
+        d.draw();
+    }
+
+</script>
+
+<script src="~/lib/chart/liteChart.min.js"></script>

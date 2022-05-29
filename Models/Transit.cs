@@ -24,6 +24,10 @@ namespace Models
         /// Дата создания заказа
         /// </summary>
         public DateTime DateCreat { get; set; }
+        /// <summary>
+        /// Дата передачи заказа водителю
+        /// </summary>
+        public DateTime DateDriverGiven { get; set; }
 
         /// <summary>
         /// Дата отправки груза
@@ -61,7 +65,9 @@ namespace Models
         public int DriverId { get; set; }
         public int RouteId { get; set; }
         public int GruzId { get; set; }
-
+        public decimal Income { get; set; }
+        public decimal Outcome { get; set; }
+        public decimal Profit { get; set; }
         public virtual Contragent Contragent { get; set; }
         public virtual Transp Transp { get; set; }
         public virtual Driver Driver { get; set; }

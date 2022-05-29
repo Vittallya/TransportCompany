@@ -1,0 +1,333 @@
+﻿@model IEnumerable<Transit>
+@{
+    ViewData["Title"] = "IndexDriver";
+    Layout = "MainLayout";
+
+    var newtr = Model.Where(x => x.Status == TransitStatus.Created);
+    var given = Model.Where(x => x.Status == TransitStatus.GivenToDriver);
+    var exec = Model.Where(x => x.Status == TransitStatus.Executing);
+    var compl = Model.Where(x => x.Status == TransitStatus.Delivered);
+
+}
+
+
+<head>
+    <style>
+        table{
+            margin: 25px 10px;
+            background-color:azure;
+            border-radius: 5px;
+        }
+
+        .acceptBtn {
+            margin-left: 60%;
+        }
+    </style>
+</head>
+
+<h1>Заявки</h1>
+
+
+<div class="tabs">
+
+    <input type="radio" id="tab-btn-1" name="tab-btn" checked />
+    <label for="tab-btn-1">Новые заявки</label>
+
+
+    <input type="radio" id="tab-btn-2" name="tab-btn" />
+    <label for="tab-btn-2">Принятые заявки</label>
+
+    <input type="radio" id="tab-btn-3" name="tab-btn" />
+    <label for="tab-btn-3">На исполнении</label>
+
+    <input type="radio" id="tab-btn-4" name="tab-btn"  />
+    <label for="tab-btn-4">Завершенные заявки</label>
+
+    <div id="content-1">
+
+        @if (newtr.Count() > 0)
+        {
+
+            foreach (var tr in newtr)
+            {
+        <table>
+            <tr>
+                <td width="250">Дата создания:</td>
+                <td>@tr.DateCreat</td>
+            </tr>
+            <tr>
+                <td width="250">Маршрут:</td>
+                <td>@tr.Route.Name</td>
+            </tr>
+            <tr>
+                <td width="250">Назначение:</td>
+                <td>@(tr.Transp.IsSpecial ? PurposeNames.PurposesSpec[tr.Transp.TransportSpecialPurpose] :
+                PurposeNames.Purposes[tr.Transp.TransportPurpose])</td>
+            </tr>
+            <tr>
+                <td width="250">ФИО получателя:</td>
+                <td>@tr.ReciverFio</td>
+            </tr>
+            <tr>
+                <td width="250">Адрес получателя:</td>
+                <td>@tr.ReciverAdress</td>
+            </tr>
+            <tr>
+                <td width="250">Номер телефона получателя:</td>
+                <td>@tr.ReciverPhone</td>
+            </tr>
+            <tr>
+                <td width="250">Техника:</td>
+                <td>@($"{tr.Transp.Mark}, {tr.Transp.Number}, грузоподъемность (т.): {tr.Transp.LoadCapasity}")</td>
+            </tr>
+            <tr>
+                <td width="250">Масса груза:</td>
+                <td>@($"{tr.Gruz.Weight}")</td>
+            </tr>
+            <tr>
+                <td width="250">Объем груза:</td>
+                <td>@($"{tr.Gruz.Size}")</td>
+            </tr>
+            <tr>
+                <td width="250">Минимальная температура груза:</td>
+                <td>@($"{tr.Gruz.MinTemp}")</td>
+            </tr>
+            <tr>
+                <td width="320">Максимальная температура груза:</td>
+                <td>@($"{tr.Gruz.MaxTemp}")</td>
+            </tr>
+        </table>
+
+            @Html.ActionLink("Принять", "DriverAcceptTransit", new {id = tr.Id}, new { @class = "acceptBtn" })
+
+            }
+
+        }
+        else
+        {
+            <h4>Новых заявок нет</h4>
+        }
+        
+
+    </div>
+
+    <div id="content-2">
+
+        @if (given.Count() > 0)
+        {
+
+            foreach (var tr in given)
+            {
+                <table>
+                    <tr>
+                        <td width="250">Дата создания:</td>
+                        <td>@tr.DateCreat</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Маршрут:</td>
+                        <td>@tr.Route.Name</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Назначение:</td>
+                        <td>
+                            @(tr.Transp.IsSpecial ? PurposeNames.PurposesSpec[tr.Transp.TransportSpecialPurpose] :
+                PurposeNames.Purposes[tr.Transp.TransportPurpose])
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="250">ФИО получателя:</td>
+                        <td>@tr.ReciverFio</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Адрес получателя:</td>
+                        <td>@tr.ReciverAdress</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Номер телефона получателя:</td>
+                        <td>@tr.ReciverPhone</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Техника:</td>
+                        <td>@($"{tr.Transp.Mark}, {tr.Transp.Number}, грузоподъемность (т.): {tr.Transp.LoadCapasity}")</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Масса груза:</td>
+                        <td>@($"{tr.Gruz.Weight}")</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Объем груза:</td>
+                        <td>@($"{tr.Gruz.Size}")</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Минимальная температура груза:</td>
+                        <td>@($"{tr.Gruz.MinTemp}")</td>
+                    </tr>
+                    <tr>
+                        <td width="320">Максимальная температура груза:</td>
+                        <td>@($"{tr.Gruz.MaxTemp}")</td>
+                    </tr>
+                </table>
+
+                using (Html.BeginForm("DriverExecutingTransit", "Transit"))
+                {
+                    @Html.Hidden("id", tr.Id);
+
+                    @*@Html.DisplayName("Дата:")
+                    <input type="date" name="dateSend" />*@
+
+                    <input type="submit" value="Начать выполнение" />
+                }
+
+
+            }
+
+        }
+        else
+        {
+            <h4>Принятых заявок нет</h4>
+        }
+
+    </div>
+    <div id="content-3">
+
+        @if (exec.Count() > 0)
+        {
+
+            foreach (var tr in exec)
+            {
+                <table>
+                    <tr>
+                        <td width="250">Дата создания:</td>
+                        <td>@tr.DateCreat</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Маршрут:</td>
+                        <td>@tr.Route.Name</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Назначение:</td>
+                        <td>
+                            @(tr.Transp.IsSpecial ? PurposeNames.PurposesSpec[tr.Transp.TransportSpecialPurpose] :
+                PurposeNames.Purposes[tr.Transp.TransportPurpose])
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="250">ФИО получателя:</td>
+                        <td>@tr.ReciverFio</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Адрес получателя:</td>
+                        <td>@tr.ReciverAdress</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Номер телефона получателя:</td>
+                        <td>@tr.ReciverPhone</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Техника:</td>
+                        <td>@($"{tr.Transp.Mark}, {tr.Transp.Number}, грузоподъемность (т.): {tr.Transp.LoadCapasity}")</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Масса груза:</td>
+                        <td>@($"{tr.Gruz.Weight}")</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Объем груза:</td>
+                        <td>@($"{tr.Gruz.Size}")</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Минимальная температура груза:</td>
+                        <td>@($"{tr.Gruz.MinTemp}")</td>
+                    </tr>
+                    <tr>
+                        <td width="320">Максимальная температура груза:</td>
+                        <td>@($"{tr.Gruz.MaxTemp}")</td>
+                    </tr>
+                </table>
+
+                using (Html.BeginForm("DriverCompleteTransit", "Transit"))
+                {
+                    @Html.Hidden("id", tr.Id);
+
+                    @Html.DisplayName("Дата доставки груза:")
+                    <input type="date" name="dateGetGruz" />
+
+                    <input type="submit" value="Завершить выполнение" />
+                }
+
+
+            }
+
+        }
+        else
+        {
+            <h4>Заявок на исполнении нет</h4>
+        }
+
+    </div>
+    <div id="content-4">
+
+        @if (compl.Count() > 0)
+        {
+
+            foreach (var tr in compl)
+            {
+                <table>
+                    <tr>
+                        <td width="250">Дата создания:</td>
+                        <td>@tr.DateCreat</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Маршрут:</td>
+                        <td>@tr.Route.Name</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Назначение:</td>
+                        <td>
+                            @(tr.Transp.IsSpecial ? PurposeNames.PurposesSpec[tr.Transp.TransportSpecialPurpose] :
+                PurposeNames.Purposes[tr.Transp.TransportPurpose])
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="250">ФИО получателя:</td>
+                        <td>@tr.ReciverFio</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Адрес получателя:</td>
+                        <td>@tr.ReciverAdress</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Номер телефона получателя:</td>
+                        <td>@tr.ReciverPhone</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Техника:</td>
+                        <td>@($"{tr.Transp.Mark}, {tr.Transp.Number}, грузоподъемность (т.): {tr.Transp.LoadCapasity}")</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Масса груза:</td>
+                        <td>@($"{tr.Gruz.Weight}")</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Объем груза:</td>
+                        <td>@($"{tr.Gruz.Size}")</td>
+                    </tr>
+                    <tr>
+                        <td width="250">Минимальная температура груза:</td>
+                        <td>@($"{tr.Gruz.MinTemp}")</td>
+                    </tr>
+                    <tr>
+                        <td width="320">Максимальная температура груза:</td>
+                        <td>@($"{tr.Gruz.MaxTemp}")</td>
+                    </tr>
+                </table>
+            }
+
+        }
+        else
+        {
+            <h4>Завершенных заявок нет</h4>
+        }
+
+    </div>
+</div>

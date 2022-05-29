@@ -10,7 +10,7 @@ using TransportCompany;
 namespace TransportCompany.Migrations
 {
     [DbContext(typeof(DbContextLocal))]
-    [Migration("20220527153752_seed")]
+    [Migration("20220529152628_seed")]
     partial class seed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -130,6 +130,9 @@ namespace TransportCompany.Migrations
                     b.Property<float>("MinTemp")
                         .HasColumnType("real");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("Size")
                         .HasColumnType("real");
 
@@ -212,6 +215,9 @@ namespace TransportCompany.Migrations
                     b.Property<DateTime>("DateCreat")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("DateDriverGiven")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DateGetGruz")
                         .HasColumnType("datetime2");
 
@@ -226,6 +232,15 @@ namespace TransportCompany.Migrations
 
                     b.Property<int>("GruzId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Income")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Outcome")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Profit")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ReciverAdress")
                         .HasColumnType("nvarchar(max)");
