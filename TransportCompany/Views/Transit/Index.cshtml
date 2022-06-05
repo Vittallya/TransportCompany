@@ -112,9 +112,40 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a id="bt_del" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<div id="confirmDialog" title="Удаление записи" hidden>
+    <p>Удалить запись </p>
+</div>
+<script>
+    $(function () {
+
+        $('#bt_del').click(function (e) {
+            debugger;
+            e.preventDefault();
+            var id = $(this).parent()[0].id;
+            console.log('id')
+            $('#confirmDialog').data('id', id).dialog('open');
+        });
+
+        $("#confirmDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            buttons: {
+                "Ok": function () {
+                    var id = $(this).data("id");
+                    window.location.href = '/Assignments/Delete/' + id;
+                },
+                "Cancel": function (e) {
+                    $(this).dialog("close");
+                }
+            },
+        });
+    });
+</script>

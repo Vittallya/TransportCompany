@@ -81,6 +81,8 @@ namespace TransportCompany.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        
+
         [HttpGet]
         public async Task<IActionResult> GruzDetails(int id)
         {

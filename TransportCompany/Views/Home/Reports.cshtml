@@ -75,7 +75,7 @@
         <div class="d-inline-block">
             <label asp-for="QuartalStart" class="control-label">С:</label>
             @Html.DropDownList("QuartalStart",
-      Enumerable.Range(1, 4).Select(x => new SelectListItem(x.ToString(), x.ToString())), 
+      Enumerable.Range(1, 4).Select(x => new SelectListItem(x.ToString(), x.ToString())),
       new { @class = "form-control" })
 
             <span asp-validation-for="QuartalStart" class="text-danger"></span>
@@ -96,7 +96,7 @@
         <div class="d-inline-block">
             <label asp-for="StartYear" class="control-label">С:</label>
             @Html.DropDownList("StartYear",
-      Enumerable.Range(2015, DateTime.Now.Year - 2015 + 1).Select(x => new SelectListItem(x.ToString(), x.ToString())), 
+      Enumerable.Range(2015, DateTime.Now.Year - 2015 + 1).Select(x => new SelectListItem(x.ToString(), x.ToString())),
       new { @class = "form-control" })
 
             <span asp-validation-for="StartYear" class="text-danger"></span>
@@ -114,13 +114,16 @@
 
 
 
-    <input type="submit" value="Показать" />
+    <input type="submit" value="Показать" class="btn btn-primary" />
 </form>
 
 <hr />
 
 <div id="place" style="height: 400px;"></div>
 
+<a id="excelBtn" 
+   style="display:none"
+   href="~/Home/GetExcel" download class="btn btn-secondary">В EXCEL</a>
 
 
 <script>
@@ -152,7 +155,10 @@
             radius: 4,
             strokeWidth: 3,
             stroke: "#ffffff", // null or color by hex/rgba
-        }
+        },
+        valueOnliteChart: {
+            show: true,
+        },
 
     };
     let div = document.getElementById("place");
@@ -197,9 +203,32 @@
         }
     }
 
-    function OnDataSuccess(data) {
-        console.log(data)
+    let reportData = null;
 
+    function OnExcelClick(e) {
+        e.preventDefault();
+        e.href += "?data = " + reportData;
+
+        //$.ajax({
+        //    url: "/Home/GetExcel",
+        //    type: "GET",
+        //    dataType: "json",
+        //    data: { data: JSON.stringify(reportData) }
+        //    //success: function (mydata) {
+        //    //    $("#UpdateDiv").html(mydata);
+        //    //    history.pushState('', 'New URL: ' + href, href); // This Code lets you to change url howyouwant
+        //    //}
+        //});
+    }
+
+
+    function OnDataSuccess(data) {
+        reportData = data;
+        console.log(data)
+        var excelAnchor = document.getElementById("excelBtn");
+
+        excelAnchor.href += '?data=' + JSON.stringify(reportData);
+        excelAnchor.style.display = "inherit";
 
         var removable = document.getElementById("chart")
 

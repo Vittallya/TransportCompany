@@ -39,6 +39,8 @@ namespace TransportCompany
                 op.UseSqlServer(connection);
             }, ServiceLifetime.Singleton);
 
+            services.AddTransient<ExcelConverter>();
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(opt =>
             {
                 opt.LoginPath = "/Account/Login";
