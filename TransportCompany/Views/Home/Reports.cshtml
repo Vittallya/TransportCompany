@@ -17,7 +17,8 @@
         <label asp-for="Period" class="control-label">Период</label>
 
         @Html.DropDownList("Period",
-       Enum.GetNames<ReportPeriod>().Select(x => new SelectListItem(x, x)), new { @class = "form-control", id = "selPeriod", onchange = "periodChanged(this)" })
+       NamesExtensions.PeriodNames.Select(x => new SelectListItem(x.Value, x.Key.ToString())),
+       new { @class = "form-control", id = "selPeriod", onchange = "periodChanged(this)" })
         <span asp-validation-for="Period" class="text-danger"></span>
     </div>
 
@@ -119,11 +120,73 @@
 
 <hr />
 
-<div id="place" style="height: 400px;"></div>
 
-<a id="excelBtn" 
-   style="display:none"
-   href="~/Home/GetExcel" download class="btn btn-secondary">В EXCEL</a>
+<div id="rep_area" style="display:none">
+
+    <div class="col-main">
+        <div class="col-insideMain">
+            <div id="place" style="height: 500px;"></div>
+        </div>
+    </div>
+
+    <div class="col-price">
+        <table>
+            <tr>
+                <td>
+                    <span>Средний чек (р):</span>
+                </td>
+                <td>
+                    <span id="Rep_e1"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Рентабельность (%):</span>
+                </td>
+                <td>
+                    <span id="Rep_e2"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Общее число заказов (р):</span>
+                </td>
+                <td>
+                    <span id="Rep_e3"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Общее сумма доходов (р):</span>
+                </td>
+                <td>
+                    <span id="Rep_e4"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Общее сумма расходов (р):</span>
+                </td>
+                <td>
+                    <span id="Rep_e5"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Общее сумма прибыли (р):</span>
+                </td>
+                <td>
+                    <span id="Rep_e6"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+    <a id="excelBtn"
+       href="~/Home/GetExcel" download class="btn btn-secondary">В EXCEL</a>
+
+</div>
 
 
 <script>
@@ -222,13 +285,27 @@
     }
 
 
+    var e1 = document.getElementById("Rep_e1");
+    var e2 = document.getElementById("Rep_e2");
+    var e3 = document.getElementById("Rep_e3");
+    var e4 = document.getElementById("Rep_e4");
+    var e5 = document.getElementById("Rep_e5");
+    var e6 = document.getElementById("Rep_e6");
+
+    var area = document.getElementById("rep_area");
+    var excelAnchor = document.getElementById("excelBtn");
+
+    var origAddress = null;
+
     function OnDataSuccess(data) {
         reportData = data;
         console.log(data)
-        var excelAnchor = document.getElementById("excelBtn");
 
-        excelAnchor.href += '?data=' + JSON.stringify(reportData);
-        excelAnchor.style.display = "inherit";
+        area.style.display = "inherit";
+        if (origAddress == null)
+            origAddress = excelAnchor.href;
+
+        excelAnchor.href = origAddress + '?data=' + JSON.stringify(reportData);
 
         var removable = document.getElementById("chart")
 
@@ -243,6 +320,14 @@
         d.addLegend({ "name": "Доходы", "stroke": "#CDDC39", "fill": "#fff", "values": data.incomes });
         d.addLegend({ "name": "Расходы", "stroke": "#3b95f7", "fill": "#fff", "values": data.outcomes });
         d.addLegend({ "name": "Прибыль", "stroke": "#FFC107", "fill": "#fff", "values": data.profits });
+        d.addLegend({ "name": "Средний чек", "stroke": "#FFD007", "fill": "#fff", "values": [data.midSell] });
+
+        e1.innerHTML = data.midSell;
+        e2.innerHTML = data.efficiency;
+        e3.innerHTML = data.totalCount;
+        e4.innerHTML = data.incomeTotal;
+        e5.innerHTML = data.outcomeTotal;
+        e6.innerHTML = data.proftTotal;
 
         // Inject chart into DOM object
         d.inject(div);

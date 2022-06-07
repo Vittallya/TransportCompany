@@ -38,7 +38,8 @@ namespace TransportCompany.Controllers
         [HttpGet]
         public IActionResult Reports()
         {
-            return View();
+            return View(new ReportSettings {StartDate = DateTime.Now.AddDays(-15), EndDate = DateTime.Now, 
+                StartYear = (short)(DateTime.Now.Year - 1), EndYear = (short)DateTime.Now.Year  });
         }
 
         [HttpPost]
@@ -190,7 +191,7 @@ namespace TransportCompany.Controllers
             double totalDays = endDate.Subtract(curDate).TotalDays;
 
             decimal efficiencyPercent = incomeTotal > 0 ? profitTotal / incomeTotal * 100 : 0;
-            decimal midSell = count / Convert.ToDecimal(totalDays);
+            decimal midSell = incomeTotal / Convert.ToDecimal(totalDays);
 
             return new ReportData
             {
@@ -199,7 +200,11 @@ namespace TransportCompany.Controllers
                 Incomes = incomesList.ToArray(),
                 Outcomes = outcomesList.ToArray(),
                 Profits = profitList.ToArray(),
-                MidSell = midSell
+                MidSell = midSell,
+                IncomeTotal = incomeTotal,
+                OutcomeTotal = incomeTotal - profitTotal,
+                ProftTotal = profitTotal,
+                TotalCount = count
             };
         }
 

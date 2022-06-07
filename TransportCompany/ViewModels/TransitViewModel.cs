@@ -17,7 +17,14 @@ namespace TransportCompany.ViewModels
         public IEnumerable<Route> Routes { get; set; }
         public IEnumerable<Driver> Drivers { get; set; }
         public Transit Transit { get; set; }
+        public int TransitId { get; set; }
+        public Gruz Gruz { get; set; }
+
+        public string Purpose { get; set; }
+        public string PurposeSpec { get; set; }
+        public string IsSpec { get; set; }
 
         public bool IsNewContragent { get; set; }
+        public int TranspId { get; set; }
     }
 }

@@ -74,13 +74,14 @@
             <form method="post" asp-action="ChooseRoute">
                 @Html.HiddenFor(y => y.Transit.GruzId)
                 @Html.HiddenFor(y => y.Transit.TranspId)
+                @Html.HiddenFor(y => y.Transit.Id)
 
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="form-group">
                     <label class="control-label">Маршрут</label>
                     @Html.DropDownListFor(y => y.Transit.RouteId, Model.Routes.Select(x => new SelectListItem(x.Name, x.Id.ToString())),
-                    new { @class = "form-control", id = "cbRoute", onchange = "CbRouteChanged(this)" })
+                    new { @class = "form-control", id = "cbRoute", onchange = "CbRouteChanged(this)", onload = "CbRouteChanged(this)" })
                     <span asp-validation-for="RouteId" class="text-danger"></span>
                 </div>
 
@@ -218,7 +219,7 @@
             </tr>
             <tr>
                 <td>
-                    <span>Общая стоимость (р):</span>
+                    <span>Прибыль (р):</span>
                 </td>
                 <td>
                     <span id="elemTotalCost"></span>
@@ -229,19 +230,15 @@
 
     <script>
         var transport = @Html.Raw(Json.Serialize(Model.Transp));
-        var routes = @Html.Raw(Json.Serialize(Model.Routes))
+        var routes = @Html.Raw(Json.Serialize(Model.Routes));
         
 
         var elem1 = document.getElementById("elemPayToDriver")
         var elem2 = document.getElementById("elemCost")
-        var elem3 = document.getElementById("elemTotalCost")
-            
-        var select = document.getElementById("cbRoute")
-        window.onload = function () {
-            CbRouteChanged(select)
-        }
+        var elem3 = document.getElementById("elemTotalCost")          
 
         function CbRouteChanged(elem) {
+            console.log(elem)
             var id = elem.value;            
             var route = routes.find(item => item.id == id)
 
@@ -254,7 +251,7 @@
 
             elem1.innerHTML = payToDriverCost;
             elem2.innerHTML = cost;
-            elem3.innerHTML = cost + payToDriverCost;
+            elem3.innerHTML = cost - payToDriverCost;
         }
 
 

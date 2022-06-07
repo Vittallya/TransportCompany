@@ -23,10 +23,13 @@
                 @Html.DisplayName("Дата создания")
             </th>
             <th>
+                @Html.DisplayName("Дата получения водителем")
+            </th>
+            <th>
                 @Html.DisplayName("Дата отправки")
             </th>
             <th>
-                @Html.DisplayName("Адрес отправителя")
+                @Html.DisplayName("Дата получения груза")
             </th>
             <th>
                 @Html.DisplayName("Адрес получателя")
@@ -36,9 +39,6 @@
             </th>
             <th>
                 @Html.DisplayName("Номер телефона получателя")
-            </th>
-            <th>
-                @Html.DisplayName("Дата получения груза")
             </th>
             <th>
                 @Html.DisplayName("Статус заявки")
@@ -71,13 +71,16 @@
                 @Html.DisplayFor(modelItem => item.Comment)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DateCreat)
+                <span>@item.DateCreat.ToString("dd.MM.yy")</span>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DateSend)
+                <span>@((int)item.Status >= 1 ? item.DateDriverGiven.ToString("dd.MM.yy") : "_")</span>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SenderAdress)
+                <span>@((int)item.Status >= 2 ? item.DateSend.ToString("dd.MM.yy") : "_")</span>
+            </td>
+            <td>
+                <span>@((int)item.Status >= 3 ? item.DateGetGruz.ToString("dd.MM.yy") : "_")</span>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ReciverAdress)
@@ -87,9 +90,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ReciverPhone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateGetGruz)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
@@ -110,9 +110,11 @@
                 @Html.ActionLink($"{item.Gruz.Weight} (т.)", "GruzDetails", new { id = item.GruzId })
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a id="bt_del" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+
+                @if (item.Status == TransitStatus.Created)                
+                    @Html.ActionLink("Ред.", "Edit", new { id = item.Id, gruzId = item.GruzId, transpId = item.TranspId }, new { @class = "btn-link" })
+                
+                <button class="btn-link" onclick="OnDelete(this)" data-id="@item.Id">Удал.</button>
             </td>
         </tr>
 }
@@ -123,29 +125,55 @@
     <p>Удалить запись </p>
 </div>
 <script>
-    $(function () {
 
-        $('#bt_del').click(function (e) {
-            debugger;
-            e.preventDefault();
-            var id = $(this).parent()[0].id;
-            console.log('id')
-            $('#confirmDialog').data('id', id).dialog('open');
-        });
 
-        $("#confirmDialog").dialog({
-            autoOpen: false,
-            modal: true,
-            resizable: false,
-            buttons: {
-                "Ok": function () {
-                    var id = $(this).data("id");
-                    window.location.href = '/Assignments/Delete/' + id;
-                },
-                "Cancel": function (e) {
-                    $(this).dialog("close");
+    //document.onload = setTimeout(SetDialog, 25)
+
+    function OnDelete(e) {
+        //let value = e.getAttribute("data-state");
+
+        var idVal = $(e).attr("data-id");
+        console.log(idVal)
+
+        if (confirm("Удалить?")) {
+
+            $.ajax({
+                url: "Transit/Delete",
+                type: "POST",
+                data: { id: idVal },
+                success: function () {
+                    e.parentNode.parentNode.remove();
                 }
-            },
-        });
-    });
+            });
+        }
+    }
+
+    //function SetDialog() {
+    //    $(function () {
+
+    //        $('#bt_del').click(function (e) {
+                
+
+    //            //var id = $(this).parent()[0].id;
+    //            //console.log('id')
+    //            //$('#confirmDialog').data('id', id).dialog('open');
+    //        });
+
+    //        //$("#confirmDialog").dialog({
+    //        //    autoOpen: false,
+    //        //    modal: true,
+    //        //    resizable: false,
+    //        //    buttons: {
+    //        //        "Ok": function () {
+    //        //            var id = $(this).data("id");
+    //        //            window.location.href = '/Assignments/Delete/' + id;
+    //        //        },
+    //        //        "Cancel": function (e) {
+    //        //            $(this).dialog("close");
+    //        //        }
+    //        //    },
+    //        //});
+    //    });
+    //}
+
 </script>

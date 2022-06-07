@@ -14,5 +14,10 @@ namespace TransportCompany.ViewModels
         public decimal[] Outcomes { get; set; }
         public decimal[] Profits { get; set; }
         public decimal MidSell { get; set; }
+
+        public decimal IncomeTotal { get; set; }
+        public decimal OutcomeTotal { get; set; }
+        public decimal ProftTotal { get; set; }
+        public int TotalCount { get; set; }
     }
 }

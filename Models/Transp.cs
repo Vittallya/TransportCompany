@@ -89,7 +89,6 @@ namespace Models
             { TransportSpecialPurpose.s, "Перемещение грузов" }
         };
 
-
     }
 
     /// <summary>

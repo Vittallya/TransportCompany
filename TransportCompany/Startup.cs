@@ -53,6 +53,8 @@ namespace TransportCompany
             {
                 y.CreateMap<User, UserViewModel>();
                 y.CreateMap<Driver, Driver>();
+                y.CreateMap<Gruz, Gruz>();
+                y.CreateMap<Transit, Transit>();
             })));
         }
 

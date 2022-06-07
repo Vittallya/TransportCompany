@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using System;
@@ -12,10 +13,12 @@ namespace TransportCompany.Controllers
     public class TransitController : Controller
     {
         private readonly DbContextLocal db;
+        private readonly Mapper map;
 
-        public TransitController(DbContextLocal db)
+        public TransitController(DbContextLocal db, Mapper map)
         {
             this.db = db;
+            this.map = map;
         }
 
         public async Task<IActionResult> Index()
@@ -76,6 +79,11 @@ namespace TransportCompany.Controllers
             var tr = await db.FindAsync<Transit>(id);
             tr.DateGetGruz = dateEnd;
             tr.Status = TransitStatus.Delivered;
+
+            var userId = int.Parse(HttpContext.Request.Cookies["UserId"]);
+            var driver = await db.Drivers.FirstOrDefaultAsync(x => x.UserId == userId);
+            driver.IsDriverFree = true;
+
             await db.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
@@ -96,47 +104,104 @@ namespace TransportCompany.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Edit(int id, int gruzId, int transpId)
+        {
+            var gruz = await db.FindAsync<Gruz>(gruzId);
+
+            var transp = await db.FindAsync<Transp>(transpId);
+
+            ViewData["isSpec"] = transp.IsSpecial;
+            ViewData["purp"] = transp.IsSpecial ? 
+                transp.TransportSpecialPurpose.ToString() : transp.TransportPurpose.ToString();
+
+            return View("Edit", new TransitViewModel { Gruz = gruz, TransitId = id, Transp = transp });
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(Gruz gruz, bool isSpec, string purp = null, string purpSpec = null)
         {
-            var vehicles = db.Transps.AsNoTracking().ToList().Where(x => x.IsFree && x.IsSpecial == isSpec);
+            Transp vehicle = GetVehicle(gruz, isSpec, purp, purpSpec);
 
-            if(isSpec)
-                vehicles = vehicles.Where(x => 
-                x.TransportSpecialPurpose == Enum.Parse<TransportSpecialPurpose>(purpSpec));
-            else
-                vehicles = vehicles.Where(x =>
-                x.TransportPurpose == Enum.Parse<TransportPurpose>(purp));
-
-            var vehicle = vehicles.
-                OrderBy(x => x.PayToDriver).
-                ThenBy(x => x.Cost).
-                FirstOrDefault(x => x.LoadCapasity >= gruz.Weight);
-
-            if(vehicle != null)
+            if (vehicle != null)
             {
                 db.Gruzs.Add(gruz);
                 await db.SaveChangesAsync();
                 return base.View("ChooseRoute", GetViewModel(gruz.Id, vehicle));
             }
 
-            ModelState.AddModelError("","Машина не найдена");
+            ModelState.AddModelError("", "Машина не найдена");
             return View();
         }
 
-        private TransitViewModel GetViewModel(int gruzId, Transp vehicle)
+        [HttpPost]
+        public async Task<IActionResult> Edit(TransitViewModel viewModel)
+        {
+            Transp vehicle = GetVehicle(viewModel.Gruz, viewModel.Transp.IsSpecial, 
+                viewModel.Transp.TransportPurpose, viewModel.Transp.TransportSpecialPurpose);
+
+            if (vehicle != null)
+            {
+
+                var origin = await db.FindAsync<Gruz>(viewModel.Gruz.Id);
+                var tr = await db.FindAsync<Transit>(viewModel.TransitId);
+                map.Map(viewModel.Gruz, origin);
+                await db.SaveChangesAsync();
+
+                tr.TranspId = vehicle.Id;
+
+                return base.View("ChooseRoute", GetViewModel(origin.Id, vehicle, tr));
+            }
+
+            ModelState.AddModelError("", "Машина не найдена");
+            return View();
+        }
+
+
+
+        private Transp GetVehicle(Gruz gruz, bool isSpec, string purp, string purpSpec)
+        {
+            var trPurp = Enum.Parse<TransportPurpose>(purp);
+            var trPurpSpec = Enum.Parse<TransportSpecialPurpose>(purpSpec);
+            Transp vehicle = GetVehicle(gruz, isSpec, trPurp, trPurpSpec);
+            return vehicle;
+        }
+
+        private Transp GetVehicle(Gruz gruz, bool isSpec, TransportPurpose trPurp, TransportSpecialPurpose trPurpSpec)
+        {
+            var vehicles = db.Transps.AsNoTracking().ToList().Where(x => x.IsFree && x.IsSpecial == isSpec);
+            if (isSpec)
+                vehicles = vehicles.Where(x =>
+                x.TransportSpecialPurpose == trPurpSpec);
+            else
+                vehicles = vehicles.Where(x =>
+                x.TransportPurpose == trPurp);
+
+            var vehicle = vehicles.
+                OrderBy(x => x.PayToDriver).
+                ThenBy(x => x.Cost).
+                FirstOrDefault(x => x.LoadCapasity >= gruz.Weight);
+            return vehicle;
+        }
+
+        private TransitViewModel GetViewModel(int gruzId, Transp vehicle, Transit tr = null)
         {
             return new TransitViewModel
             {
-                Transit = new Transit { DateCreat = DateTime.Now, GruzId = gruzId, TranspId = vehicle.Id },
+                Transit = tr ?? new Transit { DateCreat = DateTime.Now, GruzId = gruzId, TranspId = vehicle.Id },
                 Transp = vehicle,
                 Routes = db.Routes.ToList(),
-                Drivers = db.Drivers.Where(x => x.IsDriverFree).ToList(),
+                Drivers = db.Drivers.Where(x => x.IsDriverFree || (tr != null && x.Id == tr.DriverId)).ToList(),
                 Contragents = db.Contragents.ToList()
             };
         }
 
 
+        public async Task Delete(int id)
+        {
+            var tr = await db.FindAsync<Transit>(id);
+            db.Transits.Remove(tr);
+            await db.SaveChangesAsync();
+        }
 
         [HttpPost]
         public async Task <IActionResult> ChooseRoute(TransitViewModel model)
@@ -169,6 +234,7 @@ namespace TransportCompany.Controllers
             model.Transit.Income = hours * transp.Cost;
             model.Transit.Outcome = hours * transp.PayToDriver;
             model.Transit.Profit = model.Transit.Income - model.Transit.Outcome;
+            db.ChangeTracker.Clear();
             db.Update(model.Transit);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");

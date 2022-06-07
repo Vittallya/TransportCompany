@@ -1,0 +1,76 @@
+﻿@model TransitViewModel
+
+@{
+    ViewData["Title"] = "Редактирование";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Редактирование</h1>
+
+<h4>Груз</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="Gruz.Id" />
+            <input type="hidden" asp-for="TransitId" />
+            <input type="hidden" asp-for="TranspId" />
+
+            <div class="form-group">
+                <label asp-for="Gruz.Name" class="control-label">Название груза</label>
+                <input asp-for="Gruz.Name" class="form-control" />
+                <span asp-validation-for="Gruz.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gruz.Weight" class="control-label">Вес груза (т.)</label>
+                <input asp-for="Gruz.Weight" class="form-control" />
+                <span asp-validation-for="Gruz.Weight" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gruz.Size" class="control-label">Размер груза (м3)</label>
+                <input asp-for="Gruz.Size" class="form-control" />
+                <span asp-validation-for="Gruz.Size" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gruz.MinTemp" class="control-label">Минимальная температура</label>
+                <input asp-for="Gruz.MinTemp" class="form-control" />
+                <span asp-validation-for="Gruz.MinTemp" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gruz.MaxTemp" class="control-label">Максимальная температура</label>
+                <input asp-for="Gruz.MaxTemp" class="form-control" />
+                <span asp-validation-for="Gruz.MaxTemp" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label class="control-label">Назначение</label>
+                @{
+                    var purposes = PurposeNames.Purposes;
+                    var purposesSpec = PurposeNames.PurposesSpec;
+                }
+
+                @Html.CheckBoxFor(m => m.Transp.IsSpecial, new { onload = "CbChanged(this)", onchange = "CbChanged(this)", id = "cb" })
+
+
+                @Html.DropDownListFor(model => model.Transp.TransportPurpose,
+               purposes.Select(y => new SelectListItem(y.Value, y.Key.ToString())), new { @class = "form-control", id = "p" })
+
+                @Html.DropDownListFor(model => model.Transp.TransportSpecialPurpose,
+              purposesSpec.Select(y => new SelectListItem(y.Value, y.Key.ToString())), new { @class = "form-control", id = "sp" })
+
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Продолжить" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Назад</a>
+</div>
+
